@@ -15,8 +15,14 @@ opentelemetry-collector:
     service:
       pipelines:
         traces:
-          exporters: [otlphttp]     
+          receivers: [otlp,jaeger, zipkin]
+          processors: [batch, memory_limiter]
+          exporters: [otlphttp, otlp, logging, spanmetrics]     
         metrics:
-          exporters: [otlphttp]   
+          receivers: [otlp, spanmetrics]
+          processors: [batch, transform, filter/ottl, memory_limiter]
+          exporters: [prometheus, logging, otlphttp]   
         logs:
-          exporters: [otlphttp] 
+          receivers: [otlp]
+          processors: [batch, memory_limiter]
+          exporters: [otlphttp, logging] 
